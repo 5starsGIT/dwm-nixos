@@ -5,17 +5,18 @@ static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=12" };
-static const char dmenufont[]       = "monospace:size=12";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char *fonts[]          = { "Firacode Nerd Font:size=12" };
+static const char dmenufont[]       = "Firacode Nerd Font:size=12";
+static const char selfgcolor[]      = "#191724";
+static const char normbgcolor[]     = "#1f1d2e";
+static const char normbordercolor[] = "#26233a";
+static const char normfgcolor[]     = "#908caa";
+static const char selbordercolor[]  = "#9ccfd8";
+static const char selbgcolor[]      = "#c4a7e7";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+	[SchemeSel]  = { selfgcolor, selbgcolor,  selbordercolor },
 };
 
 /* tagging */
@@ -55,10 +56,22 @@ static const Layout layouts[] = {
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
+/* Control Media Players */
+static const char *medplaypausecmd[] = { "playerctl", "play-pause", NULL };
+static const char *mednextcmd[] = { "playerctl", "next", NULL };
+static const char *medprevcmd[] = { "playerctl", "previous", NULL };
+
+static const char *upvol[]    = { "wpctl",   "set-volume",   "@DEFAULT_AUDIO_SINK@",      "5%+",   NULL };
+static const char *downvol[]    = { "wpctl",   "set-volume", "@DEFAULT_AUDIO_SINK@",      "5%-",      NULL };
+static const char *mutevol[]    = { "wpctl",   "set-mute",   "@DEFAULT_AUDIO_SINK@",      "toggle",   NULL };
+
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "kitty", NULL };
+static const char *desktop_demnu_cmd[] = { "/home/alex/Documents/Scripts/desktop-dmenu", NULL };
+static const char *filecmd[] = { "nemo", NULL };
+static const char *screenshot[] = { "/home/alex/Documents/Scripts/takeScreenShot", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -85,6 +98,12 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+    { 0,                            XF86XK_AudioPlay, spawn, {.v = medplaypausecmd } },
+    { 0,                            XF86XK_AudioNext, spawn, {.v = mednextcmd } },
+    { 0,                            XF86XK_AudioPrev, spawn, {.v = medprevcmd } },
+    { 0,                            XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
+    { 0,                            XF86XK_AudioMute, spawn, {.v = mutevol } },
+    { 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = upvol } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
