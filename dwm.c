@@ -1832,16 +1832,33 @@ togglefloating(const Arg *arg)
 	if (selmon->sel->isfloating)
 		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
 			selmon->sel->w, selmon->sel->h, 0);
-  else selmon->sel->isalwaysontop = 0; /* disabled, turn this off too */
-  arrange(selmon); }
 
-  void togglealwaysontop(const Arg *arg) { if (!selmon->sel) return; if
-    (selmon->sel->isfullscreen) return;
+	else
+		selmon->sel->isalwaysontop = 0; /* disabled, turn this off too */
+	arrange(selmon);
+}
 
-    if(selmon->sel->isalwaysontop){ selmon->sel->isalwaysontop = 0; }else{
-      c->isalwaysontop = 0;
+void
+togglealwaysontop(const Arg *arg)
+{
+	if (!selmon->sel)
+		return;
+	if (selmon->sel->isfullscreen)
+		return;
 
-    }
+	if(selmon->sel->isalwaysontop){
+		selmon->sel->isalwaysontop = 0;
+	}else{
+		/* disable others */
+		for(Monitor *m = mons; m; m = m->next)
+			for(Client *c = m->clients; c; c = c->next)
+				c->isalwaysontop = 0;
+
+		/* turn on, make it float too */
+		selmon->sel->isfloating = 1;
+		selmon->sel->isalwaysontop = 1;
+	}
+
 
 	arrange(selmon);
 }
